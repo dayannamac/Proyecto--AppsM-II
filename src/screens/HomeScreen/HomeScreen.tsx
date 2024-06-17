@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { View } from 'react-native';
-import { Button, Text } from 'react-native-paper';
+import { Button, IconButton, Text } from 'react-native-paper';
 import { styles } from '../../themes/styles';
 import { Image } from 'expo-image';
 import { EditProfileModal } from './components/EditProfileModal';
-import firebase from 'firebase/auth';
+import firebase, { signOut } from 'firebase/auth';
 import { auth } from '../../configs/firebaseConfig';
+import { CommonActions, useNavigation } from '@react-navigation/native';
 
 //Interface - usuarios data
 interface FormUser {
@@ -14,23 +15,33 @@ interface FormUser {
 
 export const HomeScreen = () => {
 
+    //hook navegacion
+    const navigation = useNavigation();
+
     //Hook useState: trabajar con la data del usuario
     const [formUser, setFormUser] = useState<FormUser>({
         name: ''
     });
 
-    //hook ueState: trabajar con la data del usuario autenticado
+    //hook useState: trabajar con la data del usuario autenticado
     const [userAuth, setUserAuth] = useState<firebase.User | null>(null)
 
     //hook useEffect: capturar la data del usuario autenticado
     useEffect(() => {
         //Obtener el usuario logueado
         setUserAuth(auth.currentUser);
-        setFormUser({ name: auth.currentUser?.displayName ?? '' })
+        setFormUser({ name: auth.currentUser?.displayName ?? 'usuario' })
     }, [])
 
     // Hook useState: manipular el modal
     const [showModal, setShowModal] = useState<boolean>(false);
+
+    //funcion cerrar sesion
+    const handlerSignOut = async () => {
+        await signOut(auth);
+        navigation.dispatch(CommonActions.reset({ index: 0, routes: [{ name: 'Login' }] }));
+        setShowModal(false);
+    }
 
     return (
         <View style={styles.root}>
@@ -52,8 +63,17 @@ export const HomeScreen = () => {
 
                 <View>
                     <Button
+                        style={styles.playButton}
+                        labelStyle={styles.playButtonText}
+                        mode="contained"
+                        onPress={() => navigation.dispatch(CommonActions.navigate('Game'))}
+                    >
+                        Jugar
+                    </Button>
+
+                    <Button
                         style={styles.button}
-                        labelStyle={{ fontSize: 18 }}
+                        labelStyle={styles.buttonText}
                         mode="contained"
                         onPress={() => setShowModal(true)}
                     >
@@ -72,6 +92,16 @@ export const HomeScreen = () => {
                     style={styles.gifCarDown}
                     resizeMode="contain"
                 />
+
+                <View style={styles.iconSignOut}>
+                <IconButton
+                        icon="logout"
+                        size={30}
+                        style={{ backgroundColor: '#ff3131' }}
+                        onPress={handlerSignOut}
+                    />
+                </View>
+
             </View>
         </View>
     );

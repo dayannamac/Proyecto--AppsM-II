@@ -8,6 +8,7 @@ import { View } from 'react-native';
 import { ActivityIndicator } from 'react-native-paper';
 import { styles } from '../themes/styles';
 import { auth } from '../configs/firebaseConfig';
+import { GameScreen } from '../screens/GameScreen';
 
 const Stack = createStackNavigator();
 
@@ -25,7 +26,8 @@ const routesNoAuth: Routes[] = [
 
 //Arreglo que contenga las rutas si el usuario esta autenticado
 const routesAuth: Routes[] = [
-    { name: 'Home', screen: HomeScreen }
+    { name: 'Home', screen: HomeScreen },
+    { name: 'Game', screen: GameScreen },
 ]
 
 export const StackNavigator = () => {
