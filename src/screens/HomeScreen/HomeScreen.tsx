@@ -5,7 +5,8 @@ import { styles } from '../../themes/styles';
 import { Image } from 'expo-image';
 import { EditProfileModal } from './components/EditProfileModal';
 import firebase, { signOut } from 'firebase/auth';
-import { auth } from '../../configs/firebaseConfig';
+import { auth, dbRealTime } from '../../configs/firebaseConfig';
+import { ref, onValue } from 'firebase/database';
 import { CommonActions, useNavigation } from '@react-navigation/native';
 
 //Interface - usuarios data
@@ -26,12 +27,32 @@ export const HomeScreen = () => {
     //hook useState: trabajar con la data del usuario autenticado
     const [userAuth, setUserAuth] = useState<firebase.User | null>(null)
 
+    //hook useState: almacenar el puntaje más alto
+    const [highestScore, setHighestScore] = useState<number | null>(null);
+
     //hook useEffect: capturar la data del usuario autenticado
     useEffect(() => {
         //Obtener el usuario logueado
         setUserAuth(auth.currentUser);
         setFormUser({ name: auth.currentUser?.displayName ?? 'usuario' })
     }, [])
+
+    //hook useEffect: obtener el puntaje más alto del usuario
+    useEffect(() => {
+        if (userAuth) {
+            const scoresRef = ref(dbRealTime, 'scores/' + userAuth.uid);
+            onValue(scoresRef, (snapshot) => {
+                const scores = snapshot.val();
+                if (scores) {
+                    const scoresArray = Object.values(scores).map((score: any) => score.score);
+                    const maxScore = Math.max(...scoresArray);
+                    setHighestScore(maxScore);
+                } else {
+                    setHighestScore(0); 
+                }
+            });
+        }
+    }, [userAuth]);
 
     // Hook useState: manipular el modal
     const [showModal, setShowModal] = useState<boolean>(false);
@@ -60,6 +81,14 @@ export const HomeScreen = () => {
                 />
 
                 <Text style={styles.textHead}>Hola, {userAuth?.displayName}</Text>
+
+                {highestScore !== null && (
+                    <View>
+                        <Text variant="headlineMedium" style={styles.highScoreText}>Tu puntuación más alta es: </Text>
+                        <Text style={styles.highScoreNumber}>{highestScore}</Text>
+                    </View>
+                )}
+
 
                 <View>
                     <Button
@@ -94,7 +123,7 @@ export const HomeScreen = () => {
                 />
 
                 <View style={styles.iconSignOut}>
-                <IconButton
+                    <IconButton
                         icon="logout"
                         size={30}
                         style={{ backgroundColor: '#ff3131' }}

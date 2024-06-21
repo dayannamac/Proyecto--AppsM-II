@@ -13,7 +13,8 @@ const firebaseConfig = {
     projectId: "amovilesii",
     storageBucket: "amovilesii.appspot.com",
     messagingSenderId: "1083373743972",
-    appId: "1:1083373743972:web:2961d305dbcaa8ab225471"
+    appId: "1:1083373743972:web:2961d305dbcaa8ab225471",
+    databaseURL: "https://amovilesii-default-rtdb.firebaseio.com/"
 };
 
 // Initialize Firebase

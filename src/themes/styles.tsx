@@ -144,12 +144,46 @@ export const styles = StyleSheet.create({
         width: 3,
         backgroundColor: 'white',
         height: '100%',
-        marginTop:380
+        marginTop: 380
     },
     localImageGame: {
         width: '100%',
         height: 200,
         marginBottom: 60,
         marginTop: 70,
+    },
+    obstacle: {
+        position: 'absolute',
+        width: 50,
+        height: 50,
+        backgroundColor: '#fff',
+        top: 500,
+    },
+    scoreText: {
+        fontWeight: 'bold',
+        textAlign: 'center',
+        marginTop: 20,
+        color:'#fff'
+    },
+    scoreNumber: {
+        fontSize: 30,
+        fontWeight: 'bold',
+        textAlign: 'center',
+        marginTop: 20,
+        color:'#fff'
+    },
+    highScoreText: {
+        fontSize: 25,
+        color: '#fff',
+        marginVertical: 10,
+        textAlign: 'center',
+    },
+    highScoreNumber: {
+        fontSize: 25,
+        color: '#fff',
+        marginVertical: 10,
+        textAlign: 'center',
+        fontWeight:'bold',
+        marginBottom:25
     }
 })
